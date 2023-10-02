@@ -22,20 +22,52 @@ def calculate_score(results):
     return total_score
 
 
-def detect_shapes(img: np.ndarray) -> int:
+def detect_shapes(img: np.ndarray) -> tuple[np.ndarray, int]:
     """Detects shapes in an image.
 
     Args:
-        image: A numpy array representing an image.
+        image(np.ndarray): input frame.
 
     Returns:
-        score(int):  representing the score of the shape detected.
+        labeled_img(np.ndarray): image with detected shapes.
+        score(int): total score of all detected shapes.
     """
-
-    raise NotImplementedError
+    global all_scores
+    results = model(img, conf=0.5, show=False)[0]
+    labeled_img = results.plot(labels=False)
+    score = calculate_score(results)
+    all_scores.append(score)
+    if len(all_scores) > all_scores_max_length:
+        all_scores.pop(0)
+    score = int(np.median(all_scores))
+    return labeled_img, score
 
 
 def main(argv: Optional[Sequence[str]] = None) -> int:
+    """Main function for testing shape detection in a video stream."""
+    import cv2
+
+    cap = cv2.VideoCapture(0)
+    while True:
+        ret, frame = cap.read()
+        if not ret:
+            break
+        img, score = detect_shapes(frame)
+        cv2.putText(
+            img,
+            f"Score: {score}",
+            (10, 30),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            1,
+            (0, 255, 0),
+            2,
+            cv2.LINE_AA,
+        )
+        cv2.imshow("det", img)
+        if cv2.waitKey(1) == ord("d"):
+            break
+    cv2.destroyAllWindows()
+    cap.release()
     return 0
 
 
