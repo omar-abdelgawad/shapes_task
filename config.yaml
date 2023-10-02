@@ -1,0 +1,11 @@
+# Data
+path: /content/gdrive/MyDrive/shapes_training/data
+train: images/train  # train images (relative to 'path')
+val: images/val  # val images (relative to 'path')
+
+# Classes
+names:
+  0: cross
+  1: circle
+  2: triangle
+  3: square
