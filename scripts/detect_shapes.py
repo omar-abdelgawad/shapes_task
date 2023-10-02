@@ -1,4 +1,4 @@
-"""This module contains functions for detecting shapes in an image."""
+"""This module contains function(s) for detecting shapes in an image. The function to import is called detect_shapes."""
 from ultralytics import YOLO
 from typing import Optional
 from typing import Sequence
@@ -12,7 +12,7 @@ all_scores = []
 all_scores_max_length = 400
 
 
-def calculate_score(results):
+def _calculate_score(results):
     shape_score_dict = {"circle": 20, "square": 15, "triangle": 10, "cross": 5}
     total_score = 0
     shapes_conversion_dict = results.names
@@ -35,7 +35,7 @@ def detect_shapes(img: np.ndarray) -> tuple[np.ndarray, int]:
     global all_scores
     results = model(img, conf=0.5, show=False)[0]
     labeled_img = results.plot(labels=False)
-    score = calculate_score(results)
+    score = _calculate_score(results)
     all_scores.append(score)
     if len(all_scores) > all_scores_max_length:
         all_scores.pop(0)
