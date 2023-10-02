@@ -8,6 +8,8 @@ import os
 dir_path = os.path.dirname(__file__)
 model_path = os.path.join(dir_path, "shapes_model", "last.pt")
 model = YOLO(model_path)
+all_scores = []
+all_scores_max_length = 400
 
 
 def calculate_score(results):
@@ -29,6 +31,7 @@ def detect_shapes(img: np.ndarray) -> int:
     Returns:
         score(int):  representing the score of the shape detected.
     """
+
     raise NotImplementedError
 
 
@@ -37,4 +40,4 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
 
 
 if __name__ == "__main__":
-    main(None)
+    exit(main(None))
