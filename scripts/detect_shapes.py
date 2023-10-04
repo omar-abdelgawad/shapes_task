@@ -1,9 +1,9 @@
 """This module contains function(s) for detecting shapes in an image. The function to import is called detect_shapes."""
+import numpy as np
+import os
 from ultralytics import YOLO
 from typing import Optional
 from typing import Sequence
-import numpy as np
-import os
 
 dir_path = os.path.dirname(__file__)
 model_path = os.path.join(dir_path, "shapes_model", "last.pt")
@@ -22,7 +22,7 @@ def _calculate_score(results):
     return total_score
 
 
-def detect_shapes(img: np.ndarray) -> tuple[np.ndarray, int]:
+def detect_shapes(img: np.ndarray, conf=None) -> tuple[np.ndarray, int]:
     """Detects shapes in an image.
 
     Args:
@@ -33,7 +33,10 @@ def detect_shapes(img: np.ndarray) -> tuple[np.ndarray, int]:
         score(int): total score of all detected shapes.
     """
     global all_scores
-    results = model(img, conf=0.5, show=False)[0]
+    if conf is not None:
+        results = model(img, conf=conf, show=False)[0]
+    else:
+        results = model(img, show=False)[0]
     labeled_img = results.plot(labels=False)
     score = _calculate_score(results)
     all_scores.append(score)
