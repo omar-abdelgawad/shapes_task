@@ -10,10 +10,20 @@ model_path = os.path.join(dir_path, "shapes_model", "last.pt")
 model = YOLO(model_path)
 all_scores = []
 all_scores_max_length = 400
+shape_score_dict = {"circle": 20, "square": 15, "triangle": 10, "cross": 5}
+
+# TODO: optimize append and pop operations for all_scores
 
 
-def _calculate_score(results):
-    shape_score_dict = {"circle": 20, "square": 15, "triangle": 10, "cross": 5}
+def _calculate_score(results) -> int:
+    """Calculates the score of the detected shapes.
+
+    Args:
+        results: results of the YOLO model.
+
+    Returns:
+        total_score(int): total score of all detected shapes.
+    """
     total_score = 0
     shapes_conversion_dict = results.names
     for obj in map(int, results.cpu().boxes.cls.int()):
